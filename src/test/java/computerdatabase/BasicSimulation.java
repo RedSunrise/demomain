@@ -18,7 +18,7 @@ public class BasicSimulation extends Simulation {
     .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0");
 
   ScenarioBuilder scn = scenario("Scenario Name") // A scenario is a chain of requests and pauses
-    .exec(http("request_1")
+    .exec(http("request_1asdasd")
       .get("/"))
     .pause(7) // Note that Gatling has recorded real time pauses
     .exec(http("request_2")

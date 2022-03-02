@@ -1,0 +1,62 @@
+version: '3'
+services:
+  loadgenerator:
+    container_name: loadGenC
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+  testdatadb:
+    container_name: testDataDbC
+    image: postgres:14.1-alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./pg_testData:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: testDataDb
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+  influxdb:
+    container_name: influxdbC
+    build: builds/influxdb
+    env_file: configuration.env
+    ports:
+      - '8086:8086'
+      - '8003:8003'
+    volumes:
+      - influxdb_data:/var/lib/influxdb
+  influxdb2:
+    container_name: influxdb2C
+    build: builds/influxdb2
+    env_file: configuration.env
+    ports:
+      - '8087:8087'
+      - '8004:8004'
+    volumes:
+      - influxdb2_data:/var/lib/influxdb
+  grafana:
+    container_name: grafanaC
+    build: builds/grafana
+    env_file: configuration.env
+    links:
+      - influxdb
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data: { }
+  influxdb_data: { }
+  influxdb2_data: { }
+#  loadgendb:
+#    container_name: timescaleDbC
+#    image: timescale/timescaledb:latest-pg14
+#    ports:
+#    - "5433:5432"
+#    environment:
+#      POSTGRES_PASSWORD: 123
+#      #POSTGRES_DB: testDataDb
+#      #PGDATA: /var/lib/postgresql/data/pgdata
+#    restart: always
